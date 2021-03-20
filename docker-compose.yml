@@ -1,0 +1,32 @@
+version : '3'
+
+services:
+        api:
+                build: /home/formation/student-list/simple_api/
+                volumes:
+                        - ./simple_api/student_age.json:/data/student_age.json
+                          #                        -  ./simple_api/student_age.py:/data/student_age.py
+                ports:
+                        - "5000:5000"
+                env_file:
+                        - .env
+                restart: always
+                networks:
+                        - student-network
+        web:
+                image: php:apache
+                volumes:
+                        - ./website:/var/www/html/
+                restart: always
+                env_file:
+                        - .env
+                environment: 
+                        APIHOST: 'api'          
+                ports:          
+                        - "8080:80"
+                networks:
+                        - student-network
+                depends_on:
+                        - api 
+networks:
+        student-network:
